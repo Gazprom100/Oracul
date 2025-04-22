@@ -91,7 +91,7 @@ export default function SettingsPage() {
                           <input
                             id={`api-key-${key}`}
                             type="text"
-                            value={key === 'custom' ? '' : (settings.apiKeys[key as keyof typeof settings.apiKeys] || '')}
+                            value={key === 'custom' ? '' : (typeof settings.apiKeys[key as keyof typeof settings.apiKeys] === 'string' ? settings.apiKeys[key as keyof typeof settings.apiKeys] as string : '')}
                             onChange={(e) => updateApiKey(key as keyof typeof settings.apiKeys, e.target.value)}
                             placeholder={`Введите API ключ для ${name}`}
                             className="w-full px-4 py-2 bg-card-bg border border-border-color rounded-lg focus:outline-none focus:border-primary-color"
