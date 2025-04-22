@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@headlessui/react';
+import { Card } from '../ui/Card';
+import { CardContent } from '../ui/CardContent';
+import { CardHeader } from '../ui/CardHeader';
 import { CircleAlertIcon } from 'lucide-react';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface TokenomicsItem {
   name: string;
@@ -32,13 +34,12 @@ const TokenomicsSection: React.FC<TokenomicsProps> = ({
   if (loading) {
     return (
       <Card className="relative">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium flex items-center">
-            <div className="animate-pulse h-6 w-32 bg-gray-700/30 rounded"></div>
-          </CardTitle>
-        </CardHeader>
+        <CardHeader 
+          title="Загрузка..." 
+          rightContent={<div className="animate-pulse h-6 w-32 bg-gray-700/30 rounded"></div>}
+        />
         <CardContent className="min-h-[260px] flex items-center justify-center">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner size="large" />
         </CardContent>
       </Card>
     );
@@ -48,11 +49,7 @@ const TokenomicsSection: React.FC<TokenomicsProps> = ({
 
   return (
     <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium flex items-center">
-          Токеномика
-        </CardTitle>
-      </CardHeader>
+      <CardHeader title="Токеномика" />
       <CardContent>
         <Tabs defaultValue="distribution" className="w-full">
           <TabsList className="mb-4">

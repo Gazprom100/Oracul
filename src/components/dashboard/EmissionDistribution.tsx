@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Card } from '../ui/Card';
+import { CardHeader } from '../ui/CardHeader';
+import { CardContent } from '../ui/CardContent';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface DistributionItem {
   name: string;
@@ -26,13 +28,12 @@ const EmissionDistribution: React.FC<EmissionDistributionProps> = ({
   if (loading) {
     return (
       <Card className="relative">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium">
-            <div className="animate-pulse h-6 w-40 bg-gray-700/30 rounded"></div>
-          </CardTitle>
-        </CardHeader>
+        <CardHeader 
+          title="Загрузка..."
+          rightContent={<div className="animate-pulse h-6 w-40 bg-gray-700/30 rounded"></div>}
+        />
         <CardContent className="min-h-[220px] flex items-center justify-center">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner size="large" />
         </CardContent>
       </Card>
     );
@@ -42,8 +43,7 @@ const EmissionDistribution: React.FC<EmissionDistributionProps> = ({
 
   return (
     <Card className="relative">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">{title}</CardTitle>
+      <CardHeader title={title}>
       </CardHeader>
       <CardContent>
         {hasData ? (

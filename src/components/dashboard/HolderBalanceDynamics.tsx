@@ -1,8 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { Card } from '../ui/Card';
+import { CardContent } from '../ui/CardContent';
+import { CardHeader } from '../ui/CardHeader';
+import LoadingSpinner from '../LoadingSpinner';
 
 interface HolderGroup {
   name: string;
@@ -26,13 +28,12 @@ const HolderBalanceDynamics: React.FC<HolderBalanceDynamicsProps> = ({
   if (loading) {
     return (
       <Card className="h-full">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium">
-            <div className="animate-pulse h-6 w-64 bg-gray-700/30 rounded"></div>
-          </CardTitle>
-        </CardHeader>
+        <CardHeader 
+          title="Загрузка..." 
+          rightContent={<div className="animate-pulse h-6 w-64 bg-gray-700/30 rounded"></div>}
+        />
         <CardContent className="min-h-[220px] flex items-center justify-center">
-          <LoadingSpinner size="lg" />
+          <LoadingSpinner size="large" />
         </CardContent>
       </Card>
     );
@@ -42,9 +43,7 @@ const HolderBalanceDynamics: React.FC<HolderBalanceDynamicsProps> = ({
 
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">{title}</CardTitle>
-      </CardHeader>
+      <CardHeader title={title} />
       <CardContent>
         {hasData ? (
           <div className="space-y-4">
