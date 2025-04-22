@@ -1,0 +1,30 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "settings"
+    label: "Settings"
+    editor:
+      preview: false
+    files:
+      - label: "General Settings"
+        name: "general"
+        file: "content/settings/general.json"
+        fields:
+          - { label: "Site Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text" }
+  
+  - name: "coins"
+    label: "Featured Coins"
+    folder: "content/coins"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Symbol", name: "symbol", widget: "string" }
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Description", name: "description", widget: "markdown" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false } 
