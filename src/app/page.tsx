@@ -8,6 +8,12 @@ const LineChart = lazy(() => import('@/components/LineChart'));
 const DataTable = lazy(() => import('@/components/DataTable'));
 import { getCoins, getDelPrice, getLiveData } from '@/lib/api';
 import { Coin, DelPrice, LiveData } from '@/interfaces/api';
+import Header from '@/components/Header';
+import TokenInfo from '@/components/dashboard/TokenInfo';
+import HolderAnalytics from '@/components/dashboard/HolderAnalytics';
+import PriceChart from '@/components/dashboard/PriceChart';
+import WalletAnalytics from '@/components/dashboard/WalletAnalytics';
+import { useSettings } from '@/context/SettingsContext';
 
 // Иконки для карточек
 const Icons = {
@@ -53,10 +59,53 @@ const LoadingSkeleton = () => (
 );
 
 export default function Home() {
+  const { settings } = useSettings();
   const [loading, setLoading] = useState(true);
   const [coins, setCoins] = useState<Coin[]>([]);
   const [delPrice, setDelPrice] = useState<DelPrice | null>(null);
   const [liveData, setLiveData] = useState<LiveData | null>(null);
+  
+  // Пример данных токена
+  const [tokenData, setTokenData] = useState({
+    symbol: 'LINK',
+    name: 'Chainlink',
+    price: 13.86589,
+    change24h: 6.506,
+    marketCap: 373000000,
+    volume24h: 98000000,
+    supply: 657000000,
+  });
+
+  // Пример данных держателей
+  const [holderData, setHolderData] = useState({
+    holders: {
+      whales: { name: 'Киты', count: 319, value: 73, color: '#2a85ff' },
+      investors: { name: 'Инвесторы', count: 133, value: 13, color: '#00c2ff' },
+      retail: { name: 'Ритейл', count: 1, value: 14, color: '#a4c6ff' },
+    },
+    activeWhales: 27,
+    totalWhales: 35,
+    activeInvestors: 62,
+    totalInvestors: 85,
+    activeRetail: 81,
+    totalRetail: 81,
+  });
+
+  // Пример данных графика
+  const [chartData, setChartData] = useState<Array<{ date: string; price: number }>>([]);
+  
+  // Пример данных кошельков
+  const [walletData, setWalletData] = useState({
+    topWallets: [
+      { address: '111b87f111b87f111b87f111b87f111b87f1111', roi: 283, pnl: 6136606 },
+      { address: '8b947f8b947f8b947f8b947f8b947f8b947f8564', roi: 94, pnl: 4456587 },
+      { address: 'c3b2fcc3b2fcc3b2fcc3b2fcc3b2fcc3b2fc56dd', roi: 137, pnl: 4100966 },
+      { address: '000000a000000a000000a000000a000000a00000', roi: 65, pnl: 2500000 },
+      { address: 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb', roi: 42, pnl: 1800000 },
+    ],
+    mcap: 232700000,
+    totalVolume: 199950000,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -107,8 +156,41 @@ export default function Home() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    // Имитация загрузки данных
+    setLoading(true);
+
+    // Генерация данных для графика
+    const generateChartData = () => {
+      const data = [];
+      const today = new Date();
+      const basePrice = 13.5;
+      
+      for (let i = 30; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        const formattedDate = date.toISOString().split('T')[0];
+        
+        // Добавляем случайную вариацию к цене
+        const randomFactor = 0.9 + Math.random() * 0.2;
+        const price = basePrice * randomFactor + (i / 10);
+        
+        data.push({
+          date: formattedDate,
+          price: parseFloat(price.toFixed(5)),
+        });
+      }
+      return data;
+    };
+
+    setTimeout(() => {
+      setChartData(generateChartData());
+      setLoading(false);
+    }, 1000);
+  }, []);
+
   // Улучшенные данные для графика с более детальной информацией
-  const chartData = [
+  const chartDataForLineChart = [
     { name: 'Jan', price: 4000, volume: 2400 },
     { name: 'Feb', price: 3000, volume: 1398 },
     { name: 'Mar', price: 5000, volume: 9800 },
@@ -161,108 +243,62 @@ export default function Home() {
   ];
 
   return (
-    <div className="py-6">
-      <div className="px-4 sm:px-6 md:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }} // Ускоряем анимацию
-          className="mb-8"
-        >
-          <h1 className="text-3xl font-bold text-blue-400">
-            Dashboard
-          </h1>
-          <p className="text-gray-400 mt-2">Real-time overview of cryptocurrency market</p>
-        </motion.div>
-        
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-          <motion.div custom={0} variants={fadeInUp} initial="hidden" animate="visible">
-            <Card
-              title="Total Market Cap"
-              value={liveData ? `$${(liveData.totalMarketCap / 1000000000).toFixed(2)}B` : '$0'}
-              icon={<Icons.MarketCap />}
-              loading={loading}
+    <main className="min-h-screen flex flex-col">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {/* Информация о токене */}
+          <div className="md:col-span-12">
+            <TokenInfo 
+              symbol={tokenData.symbol}
+              name={tokenData.name}
+              price={tokenData.price}
+              change24h={tokenData.change24h}
+              marketCap={tokenData.marketCap}
+              volume24h={tokenData.volume24h}
+              supply={tokenData.supply}
             />
-          </motion.div>
-
-          <motion.div custom={1} variants={fadeInUp} initial="hidden" animate="visible">
-            <Card
-              title="24h Volume"
-              value={liveData ? `$${(liveData.total24hVolume / 1000000000).toFixed(2)}B` : '$0'}
-              icon={<Icons.Volume />}
-              loading={loading}
-            />
-          </motion.div>
-
-          <motion.div custom={2} variants={fadeInUp} initial="hidden" animate="visible">
-            <Card
-              title="Total Coins"
-              value={liveData ? liveData.totalCoins.toString() : '0'}
-              icon={<Icons.Coins />}
-              loading={loading}
-            />
-          </motion.div>
-
-          <motion.div custom={3} variants={fadeInUp} initial="hidden" animate="visible">
-            <Card
-              title="DEL Price"
-              value={delPrice ? `$${delPrice.price.toFixed(4)}` : '$0'}
-              change={delPrice?.change24h}
-              icon={<Icons.Price />}
-              loading={loading}
-            />
-          </motion.div>
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }} // Ускоряем анимацию
-          className="mb-8"
-        >
-          <Suspense fallback={<LoadingSkeleton />}>
-            <LineChart
-              data={chartData}
-              dataKeys={[
-                { key: 'price', color: '#3b82f6', name: 'Price' },
-                { key: 'volume', color: '#8b5cf6', name: 'Volume' },
-              ]}
-              title="Price & Volume History (Last 7 Days)"
-              loading={loading}
-            />
-          </Suspense>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }} // Ускоряем анимацию
-        >
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-blue-400">
-              Top Coins
-            </h2>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-              onClick={() => window.location.href = '/coins'}
-            >
-              View All
-            </motion.button>
           </div>
           
-          <Suspense fallback={<LoadingSkeleton />}>
-            <DataTable
-              data={coins}
-              columns={tableColumns}
+          {/* График цены */}
+          <div className="md:col-span-8">
+            <PriceChart 
+              data={chartData}
               loading={loading}
-              keyField="symbol"
-              linkPath="/coins"
+              symbol={tokenData.symbol}
+              openPrice={chartData[0]?.price}
+              highPrice={Math.max(...chartData.map(d => d.price))}
+              lowPrice={Math.min(...chartData.map(d => d.price))}
+              closePrice={chartData[chartData.length - 1]?.price}
+              change={tokenData.change24h}
             />
-          </Suspense>
-        </motion.div>
+          </div>
+          
+          {/* Аналитика держателей */}
+          <div className="md:col-span-4">
+            <HolderAnalytics 
+              holders={holderData.holders}
+              activeWhales={holderData.activeWhales}
+              totalWhales={holderData.totalWhales}
+              activeInvestors={holderData.activeInvestors}
+              totalInvestors={holderData.totalInvestors}
+              activeRetail={holderData.activeRetail}
+              totalRetail={holderData.totalRetail}
+            />
+          </div>
+          
+          {/* Аналитика кошельков */}
+          <div className="md:col-span-12">
+            <WalletAnalytics 
+              topWallets={walletData.topWallets}
+              loading={loading}
+              mcap={walletData.mcap}
+              totalVolume={walletData.totalVolume}
+            />
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   );
 } 

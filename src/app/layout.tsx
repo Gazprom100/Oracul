@@ -1,13 +1,13 @@
-import '@/styles/globals.css';
+import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Layout from '@/components/Layout';
+import { SettingsProvider } from '@/context/SettingsContext';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-  title: 'Oracul Dashboard',
-  description: 'Cryptocurrency analytics dashboard',
+  title: 'OraculAnalytics - Аналитика криптовалют',
+  description: 'Платформа для анализа криптовалют и блокчейн-данных',
 };
 
 export default function RootLayout({
@@ -16,9 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body className={inter.className}>
-        <Layout>{children}</Layout>
+        <SettingsProvider>
+          {children}
+        </SettingsProvider>
       </body>
     </html>
   );
