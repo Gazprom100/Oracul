@@ -9,7 +9,7 @@ import LineChart from '@/components/LineChart';
 
 export default function CoinDetailPage() {
   const params = useParams();
-  const symbol = params.symbol as string;
+  const symbol = params?.symbol as string || '';
   
   const [loading, setLoading] = useState(true);
   const [coin, setCoin] = useState<Coin | null>(null);
