@@ -8,7 +8,6 @@ const nextConfig = {
   },
   trailingSlash: true,
   distDir: 'build',
-  output: 'export',
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   webpack: (config) => {
     return config;
