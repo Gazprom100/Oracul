@@ -129,4 +129,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgements
 
 - Inspired by [Oracul](https://app.oracul.io)
-- Data provided by the Decimal Team API 
+- Data provided by the Decimal Team API
+
+## Test
+
+This is a test line to verify Git functionality. 
