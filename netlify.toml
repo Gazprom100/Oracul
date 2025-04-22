@@ -5,8 +5,9 @@
 [build.environment]
   NEXT_TELEMETRY_DISABLED = "1"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+# Удаляем плагин, так как он не нужен при статическом экспорте
+# [[plugins]]
+#   package = "@netlify/plugin-nextjs"
 
 # Remove the problematic redirect that's causing all paths to go to index.html
 # [[redirects]]
