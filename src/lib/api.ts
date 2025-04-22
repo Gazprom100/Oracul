@@ -18,10 +18,22 @@ const api = axios.create({
 });
 
 export const getCoins = async (limit = 10, offset = 0): Promise<ApiResponse<Coin[]>> => {
-  const response = await api.get<ApiResponse<Coin[]>>('/coins', {
-    params: { limit, offset },
-  });
-  return response.data;
+  try {
+    const response = await api.get<ApiResponse<Coin[]>>('/', {
+      params: { limit, offset },
+    });
+    
+    // Проверяем, что ответ содержит массив
+    if (!response.data.result || !Array.isArray(response.data.result)) {
+      console.error('API response is not an array:', response.data);
+      return { ok: true, result: [] };
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching coins:', error);
+    return { ok: false, result: [] };
+  }
 };
 
 export const getDelPrice = async (): Promise<ApiResponse<DelPrice>> => {

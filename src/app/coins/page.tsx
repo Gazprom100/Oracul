@@ -17,10 +17,13 @@ export default function CoinsPage() {
       try {
         setLoading(true);
         const response = await getCoins(limit, offset);
-        setCoins(response.result);
-        setHasMore(response.result.length === limit);
+        const result = Array.isArray(response.result) ? response.result : [];
+        setCoins(result);
+        setHasMore(result.length === limit);
       } catch (error) {
         console.error('Error fetching coins:', error);
+        setCoins([]);
+        setHasMore(false);
       } finally {
         setLoading(false);
       }

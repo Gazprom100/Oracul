@@ -27,6 +27,9 @@ const DataTable: React.FC<DataTableProps> = ({
   onRowClick,
   linkPath,
 }) => {
+  // Проверка, что data является массивом
+  const safeData = Array.isArray(data) ? data : [];
+  
   if (loading) {
     return (
       <div className="backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-xl shadow-lg overflow-hidden">
@@ -79,7 +82,7 @@ const DataTable: React.FC<DataTableProps> = ({
             </tr>
           </thead>
           <tbody className="bg-transparent divide-y divide-slate-700/30">
-            {data.map((item, index) => {
+            {safeData.map((item, index) => {
               const rowProps = onRowClick
                 ? {
                     onClick: () => onRowClick(item),
@@ -129,9 +132,9 @@ const DataTable: React.FC<DataTableProps> = ({
       </div>
       
       {/* Footer с пагинацией */}
-      {data.length > 0 && (
+      {safeData.length > 0 && (
         <div className="bg-slate-900/30 px-6 py-3 border-t border-slate-700/30 flex justify-between items-center text-xs text-gray-400">
-          <div>Showing {data.length} items</div>
+          <div>Showing {safeData.length} items</div>
           <div>
             <span className="px-3 py-1.5 bg-blue-900/50 text-blue-300 rounded-md">1</span>
           </div>
