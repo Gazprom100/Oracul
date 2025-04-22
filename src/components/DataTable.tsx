@@ -1,5 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 interface Column {
   key: string;
@@ -26,12 +29,12 @@ const DataTable: React.FC<DataTableProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+      <div className="backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-xl shadow-lg overflow-hidden">
         <div className="animate-pulse">
-          <div className="bg-gray-200 dark:bg-gray-700 h-10"></div>
+          <div className="bg-slate-700/50 h-12"></div>
           {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} className="bg-gray-100 dark:bg-gray-800 h-16 flex items-center px-4 border-t border-gray-200 dark:border-gray-700">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            <div key={index} className="h-16 flex items-center px-4 border-t border-slate-700/30">
+              <div className="h-4 bg-slate-700 rounded w-full"></div>
             </div>
           ))}
         </div>
@@ -39,45 +42,72 @@ const DataTable: React.FC<DataTableProps> = ({
     );
   }
 
+  // Анимация для строк таблицы
+  const tableRowVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.05,
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    })
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="backdrop-blur-md bg-slate-800/40 border border-slate-700/50 rounded-xl shadow-lg overflow-hidden"
+    >
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-700">
+        <table className="min-w-full divide-y divide-slate-700/30">
+          <thead className="bg-slate-900/50">
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
                 >
                   {column.header}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {data.map((item) => {
+          <tbody className="bg-transparent divide-y divide-slate-700/30">
+            {data.map((item, index) => {
               const rowProps = onRowClick
                 ? {
                     onClick: () => onRowClick(item),
-                    className: 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700',
+                    className: 'cursor-pointer hover:bg-slate-700/30 transition-colors',
                   }
                 : {};
 
               const Row = (
-                <tr key={item[keyField]} {...rowProps}>
+                <motion.tr 
+                  key={item[keyField]} 
+                  custom={index}
+                  initial="hidden"
+                  animate="visible"
+                  variants={tableRowVariants}
+                  {...rowProps}
+                  className={`${rowProps.className || ''} hover:bg-slate-700/30 transition-all duration-200`}
+                >
                   {columns.map((column) => (
                     <td
                       key={`${item[keyField]}-${column.key}`}
-                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"
+                      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200"
                     >
                       {column.render
                         ? column.render(item[column.key], item)
                         : item[column.key]}
                     </td>
                   ))}
-                </tr>
+                </motion.tr>
               );
 
               if (linkPath) {
@@ -85,10 +115,9 @@ const DataTable: React.FC<DataTableProps> = ({
                   <Link
                     key={item[keyField]}
                     href={`${linkPath}/${item.symbol || item[keyField]}`}
-                    passHref
-                    legacyBehavior
+                    className="block hover:bg-slate-700/30 transition-colors"
                   >
-                    <a className="hover:bg-gray-50 dark:hover:bg-gray-700 block">{Row}</a>
+                    {Row}
                   </Link>
                 );
               }
@@ -98,7 +127,17 @@ const DataTable: React.FC<DataTableProps> = ({
           </tbody>
         </table>
       </div>
-    </div>
+      
+      {/* Footer с пагинацией */}
+      {data.length > 0 && (
+        <div className="bg-slate-900/30 px-6 py-3 border-t border-slate-700/30 flex justify-between items-center text-xs text-gray-400">
+          <div>Showing {data.length} items</div>
+          <div>
+            <span className="px-3 py-1.5 bg-blue-900/50 text-blue-300 rounded-md">1</span>
+          </div>
+        </div>
+      )}
+    </motion.div>
   );
 };
 
