@@ -4,9 +4,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3002",
+    "start:custom": "NODE_ENV=production node server.js",
     "lint": "next lint",
-    "export": "next build && next export"
+    "deploy:prepare": "npm run build",
+    "deploy:server": "npm run build && npm run start"
   },
   "keywords": [],
   "author": "",
