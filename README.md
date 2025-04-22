@@ -129,4 +129,74 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgements
 
 - Inspired by [Oracul](https://app.oracul.io)
-- Data provided by the Decimal Team API 
+- Data provided by the Decimal Team API
+
+## Локальная разработка
+
+```bash
+# Установка зависимостей
+npm install
+
+# Запуск сервера разработки
+npm run dev
+
+# Сборка для продакшена
+npm run build
+
+# Запуск продакшн-версии
+npm run start
+```
+
+## Деплой на Netlify
+
+### Автоматический деплой
+
+1. Подключите ваш GitHub репозиторий к Netlify
+2. Настройте параметры сборки:
+   - Build command: `npm run build`
+   - Publish directory: `build`
+3. Добавьте переменные окружения:
+   - `NEXT_PUBLIC_API_URL`: `/api/v1/coins`
+
+### Ручной деплой
+
+```bash
+# Установка Netlify CLI
+npm install -g netlify-cli
+
+# Авторизация
+netlify login
+
+# Сборка проекта
+npm run build
+
+# Деплой на Netlify
+netlify deploy --prod
+```
+
+### Проверка работоспособности
+
+После деплоя проекта, откройте URL `https://your-site.netlify.app/check.html` для проверки загрузки всех ресурсов.
+
+## Структура проекта
+
+```
+src/
+  ├── app/             # Маршруты и страницы приложения
+  ├── components/      # Компоненты React
+  ├── styles/          # Глобальные стили
+  └── utils/           # Вспомогательные функции
+public/                # Статические файлы
+netlify/
+  └── functions/       # Серверные функции Netlify
+```
+
+## Решение проблем
+
+### Проблема: Стили не загружаются
+
+Убедитесь, что конфигурация в `next.config.js` указывает правильную директорию сборки (`distDir: 'build'`).
+
+### Проблема: API не работает
+
+Проверьте корректность настройки Netlify Functions и маршрутов в файле `public/_redirects`. 
